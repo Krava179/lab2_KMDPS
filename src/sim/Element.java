@@ -54,6 +54,10 @@ public class Element {
         quantity++;
     }
 
+    // Накопичення статистики за інтервал часу delta
+    public void doStatistics(double delta) {
+    }
+
     public void printResult() {
         System.out.println(getName() + "  quantity = " + quantity);
     }

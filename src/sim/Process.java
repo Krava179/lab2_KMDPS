@@ -4,6 +4,7 @@ package sim;
 public class Process extends Element {
 
     private int queue, maxqueue, failure;
+    private double busyTime; // сумарний час, коли пристрій був зайнятий
 
     public Process(double delay) {
         super(delay);
@@ -40,6 +41,16 @@ public class Process extends Element {
         }
     }
 
+    @Override
+    public void doStatistics(double delta) {
+        busyTime += super.getState() * delta; // state = 1, якщо пристрій зайнятий
+    }
+
+    // Середнє завантаження пристрою за час моделювання
+    public double getMeanLoad() {
+        return busyTime / super.getTcurr();
+    }
+
     public int getFailure() { return failure; }
     public int getQueue() { return queue; }
     public void setQueue(int queue) { this.queue = queue; }
@@ -56,5 +67,6 @@ public class Process extends Element {
     public void printResult() {
         super.printResult();
         System.out.println("failure = " + failure);
+        System.out.println("mean load = " + getMeanLoad());
     }
 }

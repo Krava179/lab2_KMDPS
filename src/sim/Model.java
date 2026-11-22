@@ -26,9 +26,18 @@ public class Model {
                 }
             }
             if (nearest == null || tnext > time) {
-                break; // у межах часу моделювання подій більше немає
+                for (Element e : list) {
+                    e.doStatistics(time - tcurr);
+                    e.setTcurr(time);
+                }
+                tcurr = time;
+                break;
             }
             System.out.println("\nIt's time for event in " + nearest.getName() + ", time = " + tnext);
+
+            for (Element e : list) {
+                e.doStatistics(tnext - tcurr);
+            }
 
             // 2. просунути час
             tcurr = tnext;
