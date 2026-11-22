@@ -52,9 +52,7 @@ public class Process extends Element {
             super.setState(super.getState() + 1);
         }
         updateTnext();
-        if (super.getNextElement() != null) {
-            super.getNextElement().inAct();
-        }
+        passOn();
     }
 
     // індекс вільного пристрою або -1, якщо всі зайняті

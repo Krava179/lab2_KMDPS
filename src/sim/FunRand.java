@@ -11,6 +11,15 @@ public class FunRand {
         rnd = new Random(seed);
     }
 
+        // Рівномірне випадкове число з інтервалу (0, 1)
+    public static double next() {
+        double a = 0;
+        while (a == 0) {
+            a = rnd.nextDouble();
+        }
+        return a;
+    }
+
     // Експоненціальний розподіл із середнім timeMean
     public static double Exp(double timeMean) {
         double a = 0;

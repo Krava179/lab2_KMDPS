@@ -1,4 +1,6 @@
 package sim;
+import java.util.ArrayList;
+
 
 // Універсальний елемент моделі. Create, Process і Dispose його нащадки
 public class Element {
@@ -9,7 +11,8 @@ public class Element {
     private int quantity;
     private double tcurr;
     private int state;
-    private Element nextElement;
+    private final ArrayList<Element> nextElements = new ArrayList<>(); // наступні елементи
+    private final ArrayList<Double> probabilities = new ArrayList<>();  // ймовірності переходу 
     private static int nextId = 0;
     private int id;
 
@@ -23,7 +26,6 @@ public class Element {
         distribution = "exp";
         tcurr = 0.0;
         state = 0;
-        nextElement = null;
         id = nextId++;
         name = "element" + id;
     }
@@ -66,6 +68,47 @@ public class Element {
         System.out.println(getName() + " state= " + state + " quantity = " + quantity + " tnext= " + tnext);
     }
 
+        // Єдиний наступний елемент (ймовірність переходу 1)
+    public void setNextElement(Element nextElement) {
+        nextElements.clear();
+        probabilities.clear();
+        addNextElement(nextElement, 1.0);
+    }
+
+    // Додати ще один можливий наступний елемент з ймовірністю переходу p.
+    // Наступним може бути і попередній елемент маршруту (повернення).
+    public void addNextElement(Element nextElement, double p) {
+        nextElements.add(nextElement);
+        probabilities.add(p);
+    }
+
+    // Випадково обрати наступний елемент за ймовірностями переходу
+    public Element chooseNext() {
+        if (nextElements.isEmpty()) {
+            return null;
+        }
+        if (nextElements.size() == 1) {
+            return nextElements.get(0);
+        }
+        double r = FunRand.next();
+        double sum = 0;
+        for (int i = 0; i < nextElements.size(); i++) {
+            sum += probabilities.get(i);
+            if (r <= sum) {
+                return nextElements.get(i);
+            }
+        }
+        return nextElements.get(nextElements.size() - 1);
+    }
+
+    // Передати вимогу в обраний наступний елемент
+    protected void passOn() {
+        Element next = chooseNext();
+        if (next != null) {
+            next.inAct();
+        }
+    }
+
     public double getDelayDev() { return delayDev; }
     public void setDelayDev(double delayDev) { this.delayDev = delayDev; }
     public String getDistribution() { return distribution; }
@@ -76,8 +119,6 @@ public class Element {
     public void setTcurr(double tcurr) { this.tcurr = tcurr; }
     public int getState() { return state; }
     public void setState(int state) { this.state = state; }
-    public Element getNextElement() { return nextElement; }
-    public void setNextElement(Element nextElement) { this.nextElement = nextElement; }
     public double getTnext() { return tnext; }
     public void setTnext(double tnext) { this.tnext = tnext; }
     public double getDelayMean() { return delayMean; }
