@@ -7,11 +7,16 @@ public class Model {
 
     private final ArrayList<Element> list;
     private double tnext, tcurr;
+    private boolean log = true; // чи виводити хід імітації та результати
 
     public Model(ArrayList<Element> elements) {
         list = elements;
         tnext = 0.0;
         tcurr = 0.0;
+    }
+
+    public void setLog(boolean log) {
+        this.log = log;
     }
 
     public void simulate(double time) {
@@ -33,7 +38,9 @@ public class Model {
                 tcurr = time;
                 break;
             }
-            System.out.println("\nIt's time for event in " + nearest.getName() + ", time = " + tnext);
+            if (log){
+                System.out.println("\nIt's time for event in " + nearest.getName() + ", time = " + tnext);
+            }
 
             for (Element e : list) {
                 e.doStatistics(tnext - tcurr);
@@ -51,9 +58,13 @@ public class Model {
                     e.outAct();
                 }
             }
-            printInfo();
+            if (log) {
+                printInfo();
+            }
         }
-        printResult();
+        if (log) {
+            printResult();
+        }
     }
 
     public void printInfo() {
